@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gerador de Conteúdo - Método You Frame</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Poppins', sans-serif; background: #F5EFE6; min-height: 100vh; padding: 36px 16px 24px; display: flex; flex-direction: column; align-items: center; }
+    h1 { font-size: 26px; font-weight: 800; color: #3B1F0E; }
+    h2.sub { font-size: 18px; font-weight: 700; color: #C68642; margin: 4px 0 8px; }
+    p.desc { color: #8a6a4a; font-size: 14px; margin-bottom: 32px; }
+    .card { background: #FDF8F2; border-radius: 24px; padding: 32px; box-shadow: 0 4px 24px rgba(59,31,14,0.08); border: 1px solid #E8D9C5; width: 100%; max-width: 600px; }
+    label.lbl { display: block; font-weight: 600; color: #3B1F0E; font-size: 14px; margin-bottom: 8px; margin-top: 20px; }
+    textarea, input { width: 100%; padding: 12px 14px; border-radius: 12px; border: 2px solid #E8D9C5; font-size: 14px; font-family: 'Poppins', sans-serif; outline: none; color: #3B1F0E; background: #fff; resize: vertical; line-height: 1.6; }
+    .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+    .checkbox-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; border: 2px solid #E8D9C5; background: #fff; cursor: pointer; font-size: 14px; color: #3B1F0E; transition: all 0.2s; }
+    .checkbox-item.checked { border-color: #C68642; background: #FFF3E0; font-weight: 600; }
+    .checkbox-item input { width: 17px; height: 17px; accent-color: #C68642; }
+    .btn { padding: 13px 40px; border-radius: 50px; border: none; background: #C68642; color: #fff; font-weight: 700; font-size: 15px; font-family: 'Poppins', sans-serif; cursor: pointer; box-shadow: 0 4px 14px rgba(198,134,66,0.35); margin-top: 28px; display: block; width: 100%; transition: background 0.2s; }
+    .btn:disabled { background: #d4b896; box-shadow: none; cursor: not-allowed; }
+    .btn-outline { background: #fff; color: #C68642; border: 2px solid #C68642; box-shadow: none; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 2px solid #E8D9C5; margin-bottom: 20px; }
+    .tab { padding: 9px 14px; border-radius: 10px 10px 0 0; border: none; border-bottom: 3px solid transparent; background: transparent; color: #9a7a5a; font-weight: 500; cursor: pointer; font-size: 13px; font-family: 'Poppins', sans-serif; transition: all 0.2s; }
+    .tab.active { border-bottom-color: #C68642; background: #FFF3E0; color: #C68642; font-weight: 700; }
+    .result-box { background: #F5EFE6; border-radius: 14px; padding: 18px; font-size: 14px; line-height: 1.8; color: #3B1F0E; white-space: pre-wrap; max-height: 440px; overflow-y: auto; margin-bottom: 16px; }
+    .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .loading { text-align: center; padding: 40px 0; }
+    .loading p { color: #C68642; font-weight: 600; font-size: 15px; margin-bottom: 6px; }
+    .loading small { color: #9a7a5a; font-size: 13px; }
+    footer { margin-top: 32px; color: #b08a6a; font-size: 13px; font-weight: 500; }
+    .error { color: #c0392b; font-size: 13px; margin-top: 12px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div style="text-align:center">
+    <h1>Gerador de Conteúdo</h1>
+    <h2 class="sub">Método You Frame</h2>
+    <p class="desc">Transforme suas ideias em posts prontos para o Instagram</p>
+  </div>
+
+  <!-- FORMULÁRIO -->
+  <div class="card" id="form-section">
+    <label class="lbl">📝 Cole ou descreva sua ideia</label>
+    <textarea id="texto" rows="5" placeholder="Cole aqui seu texto completo. Quanto mais detalhado, melhor o conteúdo gerado!"></textarea>
+
+    <label class="lbl">🎨 Quais formatos você quer criar?</label>
+    <div class="checkbox-group" id="formatos-group">
+      <label class="checkbox-item" onclick="toggleCheck(this,'carrossel')"><input type="checkbox" value="carrossel"> 🎠 Carrossel Narrativa</label>
+      <label class="checkbox-item" onclick="toggleCheck(this,'reels_frase')"><input type="checkbox" value="reels_frase"> 🎬 Reels (frase na tela + legenda)</label>
+      <label class="checkbox-item" onclick="toggleCheck(this,'roteiro')"><input type="checkbox" value="roteiro"> 🎙️ Roteiro de Reels Narrativa</label>
+      <label class="checkbox-item" onclick="toggleCheck(this,'stories')"><input type="checkbox" value="stories"> 📱 Sequência de Stories com Enquete</label>
+    </div>
+
+    <label class="lbl">👤 Quem é o seu cliente ideal?</label>
+    <textarea id="cliente" rows="2" placeholder="Ex: Mulheres empreendedoras entre 25 e 40 anos que vendem online..."></textarea>
+
+    <label class="lbl">🎯 Qual resultado você quer gerar?</label>
+    <div class="checkbox-group" id="resultados-group">
+      <label class="checkbox-item" onclick="toggleCheck(this,'engajamento')"><input type="checkbox" value="engajamento"> 💬 Engajamento</label>
+      <label class="checkbox-item" onclick="toggleCheck(this,'vendas')"><input type="checkbox" value="vendas"> 💰 Vendas</label>
+      <label class="checkbox-item" onclick="toggleCheck(this,'autoridade')"><input type="checkbox" value="autoridade"> 🏆 Autoridade</label>
+      <label class="checkbox-item" onclick="toggleCheck(this,'trafego')"><input type="checkbox" value="trafego"> 🔗 Tráfego</label>
+      <label class="checkbox-item" onclick="toggleCheck(this,'conexao')"><input type="checkbox" value="conexao"> ❤️ Conexão com a audiência</label>
+    </div>
+
+    <label class="lbl">💬 CTA específico? <span style="font-weight:400;color:#b08a6a">(opcional)</span></label>
+    <textarea id="cta" rows="2" placeholder='"Me chama no direct", "Salva esse post"...'></textarea>
+
+    <button class="btn" id="btn-continuar" onclick="avancar()">Continuar →</button>
+  </div>
+
+  <!-- RESULTADO -->
+  <div class="card hidden" id="result-section">
+    <div class="row" style="margin-bottom:20px">
+      <h2 style="font-size:17px;color:#3B1F0E">Seu conteúdo ✨</h2>
+      <button class="btn btn-outline" style="padding:8px 20px;margin:0;width:auto" onclick="resetar()">+ Novo</button>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div id="tab-content"></div>
+  </div>
+
+  <footer>By Katia Lopes</footer>
+
+  <script>
+    const formatos = [];
+    const resultados = [];
+    const gerado = {};
+
+    function toggleCheck(el, val) {
+      const arr = el.closest('#formatos-group') ? formatos : resultados;
+      const cb = el.querySelector('input');
+      setTimeout(() => {
+        if (cb.checked) { if (!arr.includes(val)) arr.push(val); el.classList.add('checked'); }
+        else { const i = arr.indexOf(val); if (i > -1) arr.splice(i, 1); el.classList.remove('checked'); }
+      }, 0);
+    }
+
+    function avancar() {
+      const texto = document.getElementById('texto').value.trim();
+      const cliente = document.getElementById('cliente').value.trim();
+      if (!texto || !cliente || formatos.length === 0 || resultados.length === 0) {
+        alert('Preencha todos os campos obrigatórios e selecione pelo menos um formato e um objetivo.');
+        return;
+      }
+      document.getElementById('form-section').classList.add('hidden');
+      const rs = document.getElementById('result-section');
+      rs.classList.remove('hidden');
+      renderTabs();
+      showTab(formatos[0]);
+    }
+
+    function renderTabs() {
+      const labels = { carrossel: '🎠 Carrossel', reels_frase: '🎬 Reels', roteiro: '🎙️ Roteiro', stories: '📱 Stories' };
+      document.getElementById('tabs').innerHTML = formatos.map(f =>
+        `<button class="tab" id="tab-${f}" onclick="showTab('${f}')">${labels[f]}</button>`
+      ).join('');
+    }
+
+    function showTab(fid) {
+      formatos.forEach(f => document.getElementById('tab-' + f)?.classList.remove('active'));
+      document.getElementById('tab-' + fid)?.classList.add('active');
+      const content = document.getElementById('tab-content');
+      if (gerado[fid]) {
+        renderResult(fid);
+      } else {
+        const labels = { carrossel: 'Carrossel Narrativa', reels_frase: 'Reels', roteiro: 'Roteiro de Reels', stories: 'Stories' };
+        content.innerHTML = `
+          <div style="text-align:center;padding:32px 0">
+            <p style="color:#9a7a5a;font-size:14px;margin-bottom:20px">Clique para gerar este formato 👇</p>
+            <button class="btn" style="width:auto;display:inline-block" onclick="gerar('${fid}')">✨ Gerar ${labels[fid]}</button>
+          </div>`;
+      }
+    }
+
+    function renderResult(fid) {
+      const labels = { carrossel: 'Carrossel Narrativa', reels_frase: 'Reels', roteiro: 'Roteiro de Reels', stories: 'Stories' };
+      document.getElementById('tab-content').innerHTML = `
+        <div class="result-box">${gerado[fid].replace(/</g,'&lt;')}</div>
+        <div class="row">
+          <button class="btn btn-outline" style="padding:10px 20px;margin:0;width:auto" onclick="gerar('${fid}')">🔄 Gerar novamente</button>
+          <button class="btn" style="padding:10px 24px;margin:0;width:auto" onclick="copiar('${fid}')">📋 Copiar texto</button>
+        </div>`;
+    }
+
+    async function gerar(fid) {
+      document.getElementById('tab-content').innerHTML = `
+        <div class="loading">
+          <p>✨ Criando seu conteúdo...</p>
+          <small>Isso leva alguns segundos</small>
+        </div>`;
+      const prompt = buildPrompt(fid);
+      try {
+        const res = await fetch('/api/gerar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Erro desconhecido');
+        gerado[fid] = data.text;
+        renderResult(fid);
+      } catch(e) {
+        document.getElementById('tab-content').innerHTML = `<p class="error">❌ ${e.message}. Tente novamente.</p>
+          <button class="btn" style="margin-top:16px" onclick="gerar('${fid}')">Tentar novamente</button>`;
+      }
+    }
+
+    function copiar(fid) {
+      navigator.clipboard.writeText(gerado[fid]);
+      alert('✅ Copiado!');
+    }
+
+    function resetar() {
+      document.getElementById('result-section').classList.add('hidden');
+      document.getElementById('form-section').classList.remove('hidden');
+      formatos.length = 0; resultados.length = 0;
+      Object.keys(gerado).forEach(k => delete gerado[k]);
+      document.getElementById('texto').value = '';
+      document.getElementById('cliente').value = '';
+      document.getElementById('cta').value = '';
+      document.querySelectorAll('.checkbox-item').forEach(el => { el.classList.remove('checked'); el.querySelector('input').checked = false; });
+    }
+
+    function buildPrompt(fid) {
+      const texto = document.getElementById('texto').value.trim();
+      const cliente = document.getElementById('cliente').value.trim();
+      const cta = document.getElementById('cta').value.trim();
+      const objLabels = { engajamento:'Engajamento', vendas:'Vendas', autoridade:'Autoridade', trafego:'Tráfego', conexao:'Conexão com a audiência' };
+      const objetivos = resultados.map(r => objLabels[r]).join(', ');
+      const base = `Você é especialista em criação de conteúdo para Instagram.
+Escreva em português brasileiro, tom de conversa, humano, narrativo e envolvente.
+Use o texto abaixo como base principal. Não invente informações novas. Adapte e reescreva no formato solicitado.
+
+TEXTO BASE:
+${texto}
+
+Cliente ideal: ${cliente}
+Objetivo do post: ${objetivos}
+CTA desejado: ${cta || 'sugira um CTA natural e relevante'}
+`;
+      if (fid === 'carrossel') return base + `
+Crie um CARROSSEL NARRATIVA para Instagram com 8 a 10 cards.
+- Card 1 (Capa): título curto e gancho forte que para o scroll
+- Cards do meio: desenvolva a narrativa do texto em linguagem próxima, conversacional, um ponto por card
+- Penúltimo card: conclusão ou virada
+- Último card: CTA
+Separe cada card com "CARD X — TÍTULO".
+Ao final escreva a LEGENDA completa com emojis e hashtags.`;
+      if (fid === 'reels_frase') return base + `
+Crie um REELS:
+- FRASE PARA A TELA: frase curta e impactante (máx 10 palavras)
+- LEGENDA: narrativa com gancho, desenvolvimento e CTA
+- Hashtags no final.`;
+      if (fid === 'roteiro') return base + `
+Crie um ROTEIRO DE REELS para 30 a 60 segundos:
+- [GANCHO 0-3s]
+- [DESENVOLVIMENTO 4-40s]: em primeira pessoa, tom de conversa
+- [VIRADA 41-55s]
+- [CTA 56-60s]
+Ao final escreva a LEGENDA com hashtags.`;
+      if (fid === 'stories') return base + `
+Crie uma SEQUÊNCIA DE 5 STORIES:
+- Frame 1: gancho ou pergunta provocadora
+- Frames 2-4: desenvolvimento curto, um ponto por frame
+- Frame 5: enquete com 2 opções
+Para cada frame: FRAME X, texto principal e sugestão visual.`;
+      return base;
+    }
+  </script>
+</body>
+</html>
